@@ -1,4 +1,4 @@
-# Jméno Příjmení
+# Dalibor Novotný
 ---
 ## Zvolené rozšíření
 - Popisek

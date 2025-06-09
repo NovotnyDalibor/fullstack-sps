@@ -1,8 +1,8 @@
 const express = require('express');
 const db = require('../database/db');
-
 const router = express.Router();
 
+// Get all subjects
 router.get('/', (req, res) => {
   db.all('SELECT * FROM subjects', [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -10,18 +10,19 @@ router.get('/', (req, res) => {
   });
 });
 
+// Get subject by ID
 router.get('/:id', (req, res) => {
-  const id = req.params.id;
-  db.get('SELECT * FROM subjects WHERE id = ?', [id], (err, row) => {
+  db.get('SELECT * FROM subjects WHERE id = ?', [req.params.id], (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
-    if (!row) return res.status(404).json({ error: 'Záznam nenalezen' });
+    if (!row) return res.status(404).json({ error: 'Předmět nenalezen' });
     res.json(row);
   });
 });
 
+// Create new subject
 router.post('/', (req, res) => {
   const { name } = req.body;
-  if (!name) return res.status(400).json({ error: 'Jmeno predmetu je povinné.' });
+  if (!name) return res.status(400).json({ error: 'Název je povinný' });
 
   db.run('INSERT INTO subjects (name) VALUES (?)', [name], function (err) {
     if (err) return res.status(500).json({ error: err.message });
@@ -29,24 +30,23 @@ router.post('/', (req, res) => {
   });
 });
 
+// Update subject
 router.put('/:id', (req, res) => {
-  const id = req.params.id;
   const { name } = req.body;
+  if (!name) return res.status(400).json({ error: 'Název je povinný' });
 
-  if (!name) return res.status(400).json({ error: 'Jmeno predmetu je povinne.' });
-
-  db.run('UPDATE subjects SET name = ? WHERE id = ?', [name, id], function (err) {
+  db.run('UPDATE subjects SET name = ? WHERE id = ?', [name, req.params.id], function (err) {
     if (err) return res.status(500).json({ error: err.message });
-    if (this.changes === 0) return res.status(404).json({ error: 'Zaznam nenalezen' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Předmět nenalezen' });
     res.json({ updated: this.changes });
   });
 });
 
+// Delete subject
 router.delete('/:id', (req, res) => {
-  const id = req.params.id;
-  db.run('DELETE FROM subjects WHERE id = ?', [id], function (err) {
+  db.run('DELETE FROM subjects WHERE id = ?', [req.params.id], function (err) {
     if (err) return res.status(500).json({ error: err.message });
-    if (this.changes === 0) return res.status(404).json({ error: 'Zaznam nenalezen' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Předmět nenalezen' });
     res.json({ deleted: this.changes });
   });
 });

@@ -74,4 +74,20 @@ router.delete('/seating_plans/:id', (req, res) => {
   });
 });
 
+router.get('/detailed', (req, res) => {
+  const sql = `
+    SELECT sp.id, sp.firstname, sp.lastname,
+           s.name AS subject_name,
+           p.name AS place_name
+    FROM seating_plans sp
+    JOIN subjects s ON sp.subject_id = s.id
+    JOIN places p ON sp.place_id = p.id
+    ORDER BY p.row, p.column
+  `;
+  db.all(sql, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
 module.exports = router;

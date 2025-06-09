@@ -1,0 +1,85 @@
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Tělo stránky */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f5f7fa;
+  color: #333;
+  padding: 2rem;
+  max-width: 700px;
+  margin: auto;
+}
+
+/* Nadpisy */
+h1, h2 {
+  color: #222;
+  margin-bottom: 1rem;
+}
+
+/* Formulář */
+form {
+  background: #fff;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+input, button {
+  padding: 0.6rem 1rem;
+  margin-right: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+button {
+  background: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+/* Seznam */
+ul {
+  list-style: none;
+  margin-top: 1rem;
+}
+
+li {
+  background: white;
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Tlačítko smazat */
+li button {
+  background: #dc3545;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+li button:hover {
+  background: #b02a37;
+}

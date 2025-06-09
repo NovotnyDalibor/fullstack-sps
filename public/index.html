@@ -1,73 +1,58 @@
-<!DOCTYPE html>
-<html lang="cs">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo List</title>
-</head>
-
-<body>
-    <h1>Todo List</h1>
-    <section>
-        <h2>Přidat nový úkol</h2>
-        <form id="todo-form">
-            <div> <label for="name">Název úkolu:</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div> <label for="description">Popis:</label>
-                <textarea id="description" name="description"></textarea>
-            </div>
-            <div> <button type="submit">Přidat úkol</button>
-            </div>
-        </form>
-    </section>
-    <section>
-        <h2>Seznam úkolů</h2>
-        <ul id="todo-list"> <!-- Zde se budou zobrazovat úkoly -->
-        </ul>
-    </section>
-    <script>
-        document.addEventListener('DOMContentLoaded', fetchTodos);
-
-        document.getElementById('todo-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const description = document.getElementById('description').value;
-            try {
-                const response = await fetch('/api/items', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, description })
-                });
-                if (response.ok) {
-                    document.getElementById('todo-form').reset();
-                    fetchTodos();
-                } else {
-                    alert('Chyba při přidávání úkolu');
-                }
-            } catch (error) {
-                console.error('Chyba:', error);
-            }
-        });
-
-        async function fetchTodos() {
-            try {
-                const response = await fetch('/api/items');
-                const todos = await response.json();
-                const todoList = document.getElementById('todo-list');
-                todoList.innerHTML = '';
-                todos.forEach(todo => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<strong>${todo.name}</strong>: ${todo.description || ''}`;
-                    todoList.appendChild(li);
-                });
-            } catch (error) {
-                console.error('Chyba při načítání úkolů:', error);
-            }
-        }
-    </script>
-
 </body>
 
+</html>
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Seating Plans</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Seating Plans</h1>
+
+  <form id="seating-form">
+    <input type="text" name="firstname" placeholder="Jméno" required />
+    <input type="text" name="lastname" placeholder="Příjmení" required />
+    <input type="number" name="subject_id" placeholder="Subject ID" required />
+    <input type="number" name="place_id" placeholder="Place ID" required />
+    <button type="submit">Přidat</button>
+  </form>
+
+  <ul id="seating-list"></ul>
+
+  <script>
+    async function loadSeatingPlans() {
+      const res = await fetch('/api/seating_plans');
+      const plans = await res.json();
+      const list = document.getElementById('seating-list');
+      list.innerHTML = plans.map(p => `
+        <li>
+          ${p.firstname} ${p.lastname} (subject: ${p.subject_id}, place: ${p.place_id})
+          <button onclick="deletePlan(${p.id})">Smazat</button>
+        </li>
+      `).join('');
+    }
+
+    async function deletePlan(id) {
+      await fetch('/api/seating_plans/' + id, { method: 'DELETE' });
+      loadSeatingPlans();
+    }
+
+    document.getElementById('seating-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target));
+      await fetch('/api/seating_plans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      e.target.reset();
+      loadSeatingPlans();
+    });
+
+    loadSeatingPlans();
+  </script>
+</body>
 </html>

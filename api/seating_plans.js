@@ -74,11 +74,11 @@ router.delete('/seating_plans/:id', (req, res) => {
   });
 });
 
-router.get('/detailed', (req, res) => {
+router.get('/seating_plans/detailed', (req, res) => {
   const sql = `
     SELECT sp.id, sp.firstname, sp.lastname,
-           s.name AS subject_name,
-           p.name AS place_name
+           s.name AS subject_name, s.code AS subject_code,
+           p.name AS place_name, p.row, p.column
     FROM seating_plans sp
     JOIN subjects s ON sp.subject_id = s.id
     JOIN places p ON sp.place_id = p.id

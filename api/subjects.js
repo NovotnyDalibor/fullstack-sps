@@ -21,21 +21,21 @@ router.get('/:id', (req, res) => {
 
 // Create new subject
 router.post('/', (req, res) => {
-  const { name } = req.body;
-  if (!name) return res.status(400).json({ error: 'Název je povinný' });
+  const { name, code } = req.body;
+  if (!name || !code) return res.status(400).json({ error: 'Název a kód jsou povinné' });
 
-  db.run('INSERT INTO subjects (name) VALUES (?)', [name], function (err) {
+  db.run('INSERT INTO subjects (name, code) VALUES (?, ?)', [name, code], function (err) {
     if (err) return res.status(500).json({ error: err.message });
-    res.status(201).json({ id: this.lastID, name });
+    res.status(201).json({ id: this.lastID, name, code });
   });
 });
 
 // Update subject
 router.put('/:id', (req, res) => {
-  const { name } = req.body;
-  if (!name) return res.status(400).json({ error: 'Název je povinný' });
+  const { name, code } = req.body;
+  if (!name || !code) return res.status(400).json({ error: 'Název a kód jsou povinné' });
 
-  db.run('UPDATE subjects SET name = ? WHERE id = ?', [name, req.params.id], function (err) {
+  db.run('UPDATE subjects SET name = ?, code = ? WHERE id = ?', [name, code, req.params.id], function (err) {
     if (err) return res.status(500).json({ error: err.message });
     if (this.changes === 0) return res.status(404).json({ error: 'Předmět nenalezen' });
     res.json({ updated: this.changes });

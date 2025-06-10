@@ -17,19 +17,23 @@
   </form>
 
   <h2>Tabulka záznamů</h2>
+  <table id="seating-table">
+    <thead>
+      <tr>
+        <th>Jméno</th>
+        <th>Příjmení</th>
+        <th>Předmět</th>
+        <th>Místo</th>
+        <th>Akce</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
   <script>
     async function loadSeatingPlans() {
       const res = await fetch('/api/seating_plans');
       const data = await res.json();
-
-      const ul = document.getElementById('seating-list');
-      ul.innerHTML = data.map(p => `
-        <li>
-          ${p.firstname} ${p.lastname} (subject ${p.subject_id}, place ${p.place_id})
-          <button onclick="deletePlan(${p.id})">Smazat</button>
-        </li>
-      `).join('');
 
       const tbody = document.querySelector('#seating-table tbody');
       tbody.innerHTML = data.map(p => `
@@ -38,7 +42,7 @@
           <td>${p.lastname}</td>
           <td>${p.subject_id}</td>
           <td>${p.place_id}</td>
-          <td><button onclick="deletePlan(${p.id})">🗑</button></td>
+          <td><button onclick="deletePlan(${p.id})"></button></td>
         </tr>
       `).join('');
     }
@@ -51,11 +55,11 @@
     document.getElementById('seating-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = Object.fromEntries(new FormData(e.target).entries());
-      await fetch('http://localhost:3000/api/seating_plans', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-});
+      await fetch('/api/seating_plans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
 
       e.target.reset();
       loadSeatingPlans();
